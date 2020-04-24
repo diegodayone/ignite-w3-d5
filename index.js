@@ -1,157 +1,86 @@
-console.log("i'm loading")
-
-let nameList = [
-    "john", "Susan", "Mauro", "Igor", "Peter", "Lukas"
-]
-
-let student = {
-    name: "John",
-    age: 20,
-    email: "john@gmail.com",
-    votes: [30, 27, 30, 20, 18],
-    createUsername: () => {
-        console.log(this.name)
+function searchKey() {
+    //1) get a reference to the search input
+    let searchBox = document.querySelector("[type=search]");
+    //2) get the value of the search thingy
+    let searchValue = searchBox.value
+    if (searchValue.length >= 3)
+        search()
+    else{
+        let list = document.querySelector("#suggestion-list")
+        list.innerHTML = "";
+        list.style.display = "none"
     }
 }
 
-
-// [ 1, 3, 2, 5, 4]
-// [ 1, 2, 3, 4, 5]
-
-// [ 10, 3, 2 , 5]
-// [ 3, 2, 5, 10 ]
-// [ 2, 3, 5, 10 ]
-
-function bubbleSort(myArray) {
-    let anySwapOccurred = false;
-
-    do {
-        anySwapOccurred = false;
-        for (let i = 0; i < myArray.length - 1; i++) { // go through all the array!
-            if (myArray[i] < myArray[i + 1]) { // if i'm bigger than the next one!
-                //swap elements
-                let temp = myArray[i]
-                myArray[i] = myArray[i + 1]
-                myArray[i + 1] = temp
-                anySwapOccurred = true;
-            }
-        }
-        console.log(myArray)
-    } while (anySwapOccurred)
-}
-
-function printName() {
-    for (let i = 0; i < nameList.length; i++) {
-        console.log("In position number " + i + " --> " + nameList[i])
-    }
-}
 
 function search() {
-    console.log("i'm clicked")
-}
+    //1) get a reference to the search input
+    let searchBox = document.querySelector("[type=search]");
+    //2) get the value of the search thingy
+    let searchValue = searchBox.value.toLowerCase()
+    console.log(searchValue)
+    //3) filter the books
+    let result = []
 
-function helloWorld(name, email) {
-
-    // > greater than
-    // < lower than
-    if (email !== undefined) {
-        console.log("helloWorld is working")
-        console.log(name, email)
-        return email + " --> " + name
+    for (let i = 0; i < books.length; i ++) { //going through all the books in our catalogue
+        let currentBook = books[i] //naming the book we're analyzing right now
+        if (currentBook.title.toLowerCase().indexOf(searchValue) !== -1 // does the title contains the word?
+            || currentBook.category.toLowerCase().indexOf(searchValue) !== -1 ) //or the category?
+            result.push(currentBook) //if YES, push it into the result!
     }
-    else {
-        console.log("This is my name: " + name)
-        return "This is my name: " + name
+
+    loadSuggestions(result)
+
+    //4) recreate the list of books
+    loadBooks(result) // print on the page only the books that are into the newly created array
+}
+
+function loadSuggestions(result) {
+    let list = document.querySelector("#suggestion-list")
+    list.innerHTML = "";
+    list.style.display = "block"
+
+    for (let i = 0; i < result.length; i ++) {
+        list.innerHTML += "<p>" + result[i].title + "</p>"
     }
 }
 
-function loopUntil(numberOfTimes) {
-    while (numberOfTimes > 0) {
-        console.log("The new value is: " + numberOfTimes)
-        numberOfTimes--; // decrease value by 1. numberOfValues = numberOfValues - 1;
-    }
-    console.log("END")
-}
+function loadBooks(bookList) {
+    let library = document.querySelector("#library"); //getting a reference to the library
+    library.innerHTML = "" //clearing the previous search result
 
-function doLoopUntil(numberOfTimes) {
-    do {
-        console.log("The new value is: " + numberOfTimes)
-        numberOfTimes--; // decrease value by 1. numberOfValues = numberOfValues - 1;
-    } while (numberOfTimes > 0)
-
-    console.log("END")
-}
-
-function simulateArrayInFunction() {
-    let array = []
-
-    for (let i = 0; i < 10; i++)
-        array.push(Math.round((Math.random() * 100)))
-
-    return array;
-}
-
-function getMinimum(a){
-    let min = Number.MAX_VALUE
-
-    for(let i = 0; i < a.length; i++)
-        if (a[i] < min)
-            min = a[i]
-
-    min = a[0]
-    for(let i = 1; i < a.length; i++)
-    if (a[i] < min)
-        min = a[i]
-
-    return min;
-}
-
-function loadBooks() {
-    let library = document.querySelector("#library");
-
-    for (let i = 0; i < 100; i++) { //for each book in my library ==> books.length
+    for (let i = 0; i < Math.min(bookList.length, 100); i++) { //searching a maximum of 100 elements
         //console.log(books[i])
-        let child = document.createElement("div")
-        child.className = "col-sm-6 col-md-4 col-lg-3 col-xl-2 card";
-        child.innerHTML =   `<img class="card-img-top" src="${books[i].img}" />
+        let child = document.createElement("div") //creating the parent div
+        child.className = "col-sm-6 col-md-4 col-lg-3 col-xl-2 card"; //assigning class
+        child.innerHTML =   `<img class="card-img-top" src="${bookList[i].img}" />
                                      <div class="card-body">
-                                      <p>${books[i].title} </p>
-                                      <span class="badge badge-primary">${books[i].category}</span>
-                                      <span class="badge badge-danger">${books[i].price} €</span>
-                                 </div>`
-        child.addEventListener("click", (e) => {
+                                      <p>${bookList[i].title} </p>
+                                      <span class="badge badge-primary">${bookList[i].category}</span>
+                                      <span class="badge badge-danger">${bookList[i].price} €</span>
+                                 </div>` //assign the content
+        child.addEventListener("click", (e) => { //assign the event handler for click
             e.currentTarget.classList.toggle("selected")
-            selectBooks();
+            selectBooks(); 
         })
-        library.appendChild(child)
-
-
-        // library.innerHTML += `<div class="col-sm-6 col-md-4 col-lg-3 col-xl-2 card">
-        //                         <img class="card-img-top" src="${books[i].img}" />
-        //                             <div class="card-body">
-        //                              <p>${books[i].title} </p>
-        //                              <span class="badge badge-primary">${books[i].category}</span>
-        //                              <span class="badge badge-danger">${books[i].price} €</span>
-        //                         </div>
-        //                     </div>` //i'll add it to my library div
-        // ALT + 96 => backtick`
+        library.appendChild(child) //adding it to the parent
     }
 }
 
-function selectBooks() {
-    let myUl = document.querySelector("#selected-books")
-    myUl.innerHTML = "";
-    let selected = document.querySelectorAll(".card.selected")
+function selectBooks() { 
+    let myUl = document.querySelector("#selected-books") //search for the list
+    myUl.innerHTML = ""; //reset the list 
+    let selected = document.querySelectorAll(".card.selected") //get all the selected books
 
-    for (let i = 0; i < selected.length; i ++){
-        myUl.innerHTML += "<li>"  + selected[i].querySelector("p").innerText + "</li>"
+    for (let i = 0; i < selected.length; i ++){ //for each one of them
+        myUl.innerHTML += "<li>"  + selected[i].querySelector("p").innerText + "</li>" //create a new paragraph in the bottom
     }
 
 }
 
 window.onload = function () {
     console.log("the page has loaded")
-    loadBooks();
+    loadBooks(books); //load ALL the books
 }
 
 

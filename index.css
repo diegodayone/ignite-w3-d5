@@ -21,6 +21,27 @@ h1 {
 .selected {
     border: 2px solid green;
 }
+
+#search-panel{
+    position:relative;
+}
+
+#suggestion-list p {
+    margin:0px;
+    padding:0px;
+}
+
+#suggestion-list{
+    top: 50px;
+    position: absolute;
+    background: rgba(100,100,100,0.9);
+    padding: 20px;
+    border: 1px solid black;
+    border-radius: 5px;
+    max-height: 250px;
+    z-index: 1;
+    overflow: auto;
+}
 /* 
 .book-card {
     border-radius: 10px;
